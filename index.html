@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GovtDrop ⚡ Central & Tamil Nadu Govt Jobs Radar 2026</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              400: '#a78bfa',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              DEFAULT: '#8b5cf6',
+              neon: '#22c55e',
+              amber: '#f59e0b',
+              danger: '#ef4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Alpine.js for State Management -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .glass {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.45);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+
+<body x-data="govtDropApp()" x-init="initApp()" class="bg-slate-950 text-slate-100 font-sans min-h-screen selection:bg-brand-500 selection:text-white flex flex-col justify-between">
+
+  <!-- ================= LIVE NOTIFICATION TICKER ================= -->
+  <div class="bg-gradient-to-r from-brand-700 via-indigo-600 to-emerald-600 py-1.5 px-4 text-xs font-semibold text-white overflow-hidden shadow-inner">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2 truncate">
+        <span class="px-1.5 py-0.5 rounded bg-black/30 font-bold uppercase tracking-wider text-[10px]">🔥 Live Drops</span>
+        <span class="truncate">RRB NTPC Result Declared • Southern Railway 4308 Posts Open • TNPSC Group 2 Apply Online • SBI Clerk Deadline Approaching</span>
+      </div>
+      <button @click="openSubscribeModal = true" class="hidden sm:inline-flex items-center space-x-1 underline hover:text-slate-200 text-[11px] font-bold">
+        <span>Get WhatsApp Alerts</span>
+        <i data-lucide="chevron-right" class="w-3 h-3"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= STICKY HEADER ================= -->
+  <header class="sticky top-0 z-40 glass border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
+          <i data-lucide="zap" class="w-5 h-5 text-white stroke-[2.5]"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-xl font-black tracking-tight text-white">GovtDrop</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block -mt-1">Jobs & Admissions 2026</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Shortcuts -->
+      <nav class="hidden lg:flex items-center space-x-1">
+        <a href="#urgent" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">⏳ Ending Soon</a>
+        <a href="#radar" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">📡 Exam Radar</a>
+        <a href="#jobs-feed" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">💼 All Jobs (50+)</a>
+        <a href="#admissions" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition">🎓 Admissions</a>
+      </nav>
+
+      <!-- Action Cluster -->
+      <div class="flex items-center space-x-2">
+        <!-- Bookmark Drawer Trigger -->
+        <button @click="openBookmarkDrawer = true" class="relative p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition" title="Saved Jobs">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span x-show="bookmarkedJobs.length > 0" x-text="bookmarkedJobs.length" class="absolute -top-1 -right-1 w-4 h-4 bg-brand-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center"></span>
+        </button>
+
+        <!-- Social CTA -->
+        <a href="https://whatsapp.com" target="_blank" class="hidden sm:flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-black font-bold text-xs transition">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Join Channel</span>
+        </a>
+
+        <a href="https://t.me" target="_blank" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500 hover:text-white font-bold text-xs transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Telegram</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= HERO & SMART FILTER ENGINE ================= -->
+  <section class="relative pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center">
+    
+    <!-- Pulse Badge -->
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-800 text-xs text-slate-300 mb-4 shadow-inner">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span><b>28,626+</b> Open Vacancies Tracked Across Central & Tamil Nadu</span>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white mb-4">
+      The No-BS Govt Job Radar.<br class="hidden sm:inline"/>
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 via-indigo-300 to-emerald-400">
+        Filtered for what you actually studied.
+      </span>
+    </h1>
+
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base mb-8">
+      Cut through 50-page bureaucratic PDFs. Get direct apply links, salary scales, cutoff lists, and admit cards in clean bite-sized drops.
+    </p>
+
+    <!-- Search Box -->
+    <div class="relative max-w-3xl mx-auto mb-4">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+        <i data-lucide="search" class="w-5 h-5"></i>
+      </div>
+      <input 
+        type="text" 
+        x-model="searchQuery"
+        placeholder="Type any degree (B.Tech, 10th, B.Sc), role (Apprentice, Clerk) or org (ISRO, TNPSC)..." 
+        class="w-full pl-12 pr-12 py-4 bg-slate-900 border border-slate-700/80 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition shadow-2xl text-sm sm:text-base"
+      >
+      <button 
+        x-show="searchQuery" 
+        @click="searchQuery = ''" 
+        class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Sector Filters -->
+    <div class="flex flex-wrap items-center justify-center gap-1.5 mb-3">
+      <button 
+        @click="selectedCategory = 'ALL'"
+        :class="selectedCategory === 'ALL' ? 'bg-slate-200 text-slate-950 font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'"
+        class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-800 transition"
+      >
+        🌟 All Sectors
+      </button>
+      <button 
+        @click="selectedCategory = 'TN_GOVT'"
+        :class="selectedCategory === 'TN_GOVT' ? 'bg-emerald-500 text-black font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'"
+        class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-800 transition"
+      >
+        🏛️ Tamil Nadu Govt
+      </button>
+      <button 
+        @click="selectedCategory = 'CENTRAL_PSU'"
+        :class="selectedCategory === 'CENTRAL_PSU' ? 'bg-indigo-500 text-white font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'"
+        class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-800 transition"
+      >
+        ⚡ Central & PSUs
+      </button>
+      <button 
+        @click="selectedCategory = 'BANKING'"
+        :class="selectedCategory === 'BANKING' ? 'bg-amber-500 text-black font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'"
+        class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-800 transition"
+      >
+        🏦 Banking & Finance
+      </button>
+      <button 
+        @click="selectedCategory = 'RAILWAYS'"
+        :class="selectedCategory === 'RAILWAYS' ? 'bg-sky-500 text-white font-bold' : 'bg-slate-900 text-slate-400 hover:text-white'"
+        class="px-3 py-1 rounded-lg text-xs font-semibold border border-slate-800 transition"
+      >
+        🚆 Railways & Defense
+      </button>
+    </div>
+
+    <!-- Qualification Fast Pills -->
+    <div class="flex flex-wrap items-center justify-center gap-1.5 max-w-4xl mx-auto">
+      <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1">Degree:</span>
+      <template x-for="qual in qualificationList" :key="qual">
+        <button 
+          @click="selectedQualification = (selectedQualification === qual ? '' : qual)"
+          :class="selectedQualification === qual 
+            ? 'bg-brand-600 text-white border-brand-500 shadow-lg shadow-brand-500/20' 
+            : 'bg-slate-900/80 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'"
+          class="px-3 py-1 rounded-full text-xs font-medium border transition-all duration-150 active:scale-95"
+          x-text="qual"
+        ></button>
+      </template>
+    </div>
+
+  </section>
+
+  <!-- ================= SECTION 1: ENDING THIS WEEK (URGENT BENTO) ================= -->
+  <section id="urgent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-2">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+        </span>
+        <h2 class="text-xl font-bold text-white tracking-tight">Closing This Week (Don't Miss)</h2>
+      </div>
+      <span class="text-xs text-red-400 font-medium">Servers choke on the last date. Apply today.</span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <template x-for="urgent in urgentJobs" :key="urgent.org + urgent.role">
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-l-red-500 flex flex-col justify-between hover:border-slate-700 transition">
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-red-500/10 text-red-400 border border-red-500/20" x-text="urgent.lastDate"></span>
+              <span class="text-xs font-mono font-bold text-slate-400" x-text="urgent.posts + ' Posts'"></span>
+            </div>
+            <h3 class="font-bold text-sm text-white line-clamp-1" x-text="urgent.org"></h3>
+            <p class="text-xs text-slate-300 mt-0.5 line-clamp-1" x-text="urgent.role"></p>
+            <div class="flex flex-wrap gap-1 mt-2 mb-3">
+              <template x-for="q in urgent.qual" :key="q">
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-400" x-text="q"></span>
+              </template>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+            <button @click="openJobModal(urgent)" class="text-xs font-semibold text-brand-400 hover:text-brand-300">View Info</button>
+            <a :href="urgent.applyLink || '#'" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-bold transition">Apply ↗</a>
+          </div>
+        </div>
+      </template>
+    </div>
+  </section>
+
+  <!-- ================= SECTION 2: LIVE EXAM RADAR ================= -->
+  <section id="radar" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="{ activeTab: 'admit' }">
+    <div class="glass p-6 rounded-3xl">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="flex items-center space-x-2">
+            <i data-lucide="radio" class="w-5 h-5 text-emerald-400 animate-pulse"></i>
+            <h2 class="text-xl font-bold text-white tracking-tight">Live Exam Radar (Admit Cards, Results & Dates)</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Real-time status synced from SSC, RRB, TNPSC, NTA, and Banking portals</p>
+        </div>
+
+        <!-- Radar Switcher -->
+        <div class="inline-flex p-1 bg-slate-900 rounded-xl border border-slate-800 self-start">
+          <button 
+            @click="activeTab = 'admit'"
+            :class="activeTab === 'admit' ? 'bg-brand-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+            class="px-3 py-1.5 text-xs font-bold rounded-lg transition"
+          >
+            🎟️ Admit Cards (<span x-text="admitCards.length"></span>)
+          </button>
+          <button 
+            @click="activeTab = 'results'"
+            :class="activeTab === 'results' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+            class="px-3 py-1.5 text-xs font-bold rounded-lg transition"
+          >
+            📊 Results & Merit (<span x-text="resultsList.length"></span>)
+          </button>
+          <button 
+            @click="activeTab = 'dates'"
+            :class="activeTab === 'dates' ? 'bg-sky-600 text-white shadow-md' : 'text-slate-400 hover:text-white'"
+            class="px-3 py-1.5 text-xs font-bold rounded-lg transition"
+          >
+            📅 Exam Calendar (<span x-text="examDates.length"></span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 1: Admit Cards -->
+      <div x-show="activeTab === 'admit'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <template x-for="item in admitCards" :key="item.org + item.post">
+          <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800/90 flex items-center justify-between hover:border-slate-700 transition">
+            <div class="truncate mr-2">
+              <div class="flex items-center space-x-2">
+                <span class="font-extrabold text-xs text-brand-400" x-text="item.org"></span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-brand-500/10 text-brand-300 font-semibold" x-text="item.status"></span>
+              </div>
+              <p class="text-xs font-semibold text-slate-200 truncate mt-0.5" x-text="item.post"></p>
+            </div>
+            <a :href="item.link" class="p-2 rounded-lg bg-slate-800 hover:bg-brand-600 text-white transition flex-shrink-0" title="Download Hall Ticket">
+              <i data-lucide="download" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </template>
+      </div>
+
+      <!-- Tab 2: Results -->
+      <div x-show="activeTab === 'results'" x-cloak class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <template x-for="item in resultsList" :key="item.org + item.post">
+          <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800/90 flex items-center justify-between hover:border-slate-700 transition">
+            <div class="truncate mr-2">
+              <div class="flex items-center space-x-2">
+                <span class="font-extrabold text-xs text-emerald-400" x-text="item.org"></span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-300 font-semibold" x-text="item.type"></span>
+              </div>
+              <p class="text-xs font-semibold text-slate-200 truncate mt-0.5" x-text="item.post"></p>
+            </div>
+            <a :href="item.link" class="p-2 rounded-lg bg-slate-800 hover:bg-emerald-600 text-white transition flex-shrink-0" title="Check Marks">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </template>
+      </div>
+
+      <!-- Tab 3: Exam Dates -->
+      <div x-show="activeTab === 'dates'" x-cloak class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <template x-for="item in examDates" :key="item.org + item.post">
+          <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800/90 flex items-center justify-between hover:border-slate-700 transition">
+            <div class="truncate mr-2">
+              <div class="flex items-center space-x-2">
+                <span class="font-extrabold text-xs text-sky-400" x-text="item.org"></span>
+                <span class="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-300 font-semibold" x-text="item.status"></span>
+              </div>
+              <p class="text-xs font-semibold text-slate-200 truncate mt-0.5" x-text="item.post"></p>
+            </div>
+            <a href="#" class="p-2 rounded-lg bg-slate-800 hover:bg-sky-600 text-white transition flex-shrink-0" title="View Schedule">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </template>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= SECTION 3: ALL RECRUITMENT OPPORTUNITIES ================= -->
+  <section id="jobs-feed" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div>
+        <h2 class="text-2xl font-black text-white tracking-tight">Active Opportunities Radar</h2>
+        <p class="text-xs text-slate-400 mt-0.5">
+          Showing <span class="text-brand-400 font-bold" x-text="filteredMasterJobs.length"></span> opportunities matching your criteria
+        </p>
+      </div>
+
+      <!-- Reset Filters -->
+      <div class="flex items-center space-x-2">
+        <button 
+          x-show="searchQuery || selectedQualification || selectedCategory !== 'ALL'"
+          @click="resetFilters()"
+          class="text-xs font-bold text-rose-400 hover:underline flex items-center space-x-1"
+        >
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span>Clear Filters</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Job Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <template x-for="job in paginatedJobs" :key="job.id">
+        <div class="glass-card p-5 rounded-2xl hover:border-slate-600 transition flex flex-col justify-between group relative overflow-hidden">
+          
+          <div>
+            <!-- Top Org Row -->
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider bg-slate-900 text-brand-300 border border-slate-800" x-text="job.org"></span>
+              <span class="text-xs font-mono font-bold text-slate-400 bg-slate-900/90 px-2 py-0.5 rounded border border-slate-800/80" x-text="job.posts ? (job.posts + ' Posts') : 'Open'"></span>
+            </div>
+
+            <!-- Role Title -->
+            <h3 class="text-base font-bold text-white group-hover:text-brand-300 transition line-clamp-1" x-text="job.role"></h3>
+
+            <!-- Tags -->
+            <div class="flex flex-wrap gap-1.5 mt-2 mb-4">
+              <template x-for="q in job.qual" :key="q">
+                <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800" x-text="q"></span>
+              </template>
+            </div>
+          </div>
+
+          <!-- Bottom Row Info -->
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <div class="flex flex-col">
+              <span class="text-[10px] uppercase font-semibold text-slate-500">Deadline</span>
+              <span class="text-xs font-mono font-bold text-amber-400" x-text="job.lastDate"></span>
+            </div>
+
+            <div class="flex items-center space-x-1.5">
+              <!-- Bookmark -->
+              <button 
+                @click="toggleBookmark(job)" 
+                :class="isBookmarked(job) ? 'bg-brand-500 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'"
+                class="p-2 rounded-lg border border-slate-800 transition"
+                title="Save Job"
+              >
+                <i data-lucide="bookmark" class="w-3.5 h-3.5"></i>
+              </button>
+
+              <!-- Share -->
+              <button 
+                @click="shareJob(job)" 
+                class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition" 
+                title="Share via WhatsApp"
+              >
+                <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+              </button>
+
+              <!-- Details Modal -->
+              <button 
+                @click="openJobModal(job)" 
+                class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs inline-flex items-center transition shadow-md shadow-brand-600/20"
+              >
+                Details <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 ml-1"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </template>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="filteredMasterJobs.length === 0" x-cloak class="text-center py-16 glass rounded-3xl my-6">
+      <i data-lucide="search-x" class="w-12 h-12 text-slate-500 mx-auto mb-3"></i>
+      <h3 class="text-lg font-bold text-white">No jobs found matching your filters</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Try clearing your search term or selecting a different degree qualification pill above.</p>
+      <button @click="resetFilters()" class="mt-4 px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Reset All Filters</button>
+    </div>
+
+    <!-- Load More / Pagination -->
+    <div x-show="visibleJobCount < filteredMasterJobs.length" class="text-center mt-8">
+      <button 
+        @click="visibleJobCount += 12; $nextTick(() => lucide.createIcons())" 
+        class="px-6 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-white hover:bg-slate-800 text-xs font-bold tracking-wide transition shadow-lg inline-flex items-center space-x-2"
+      >
+        <span>Load More Opportunities</span>
+        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ================= SECTION 4: COLLEGE ENTRANCE & COUNSELING ================= -->
+  <section id="admissions" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="glass p-6 sm:p-8 rounded-3xl border border-slate-800">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <span class="px-2.5 py-1 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Admissions 2026–2027</span>
+          <h2 class="text-2xl font-black text-white tracking-tight mt-1">College Admissions & Entrance Radar</h2>
+          <p class="text-xs text-slate-400">Direct admission & counseling notifications for Tamil Nadu and All-India Universities</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <template x-for="item in admissionsList" :key="item.title">
+          <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 hover:border-slate-700 transition flex items-center justify-between">
+            <div class="pr-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider" :class="item.categoryColor" x-text="item.category"></span>
+              <h4 class="text-xs font-bold text-white mt-0.5 line-clamp-1" x-text="item.title"></h4>
+              <p class="text-[11px] text-slate-400" x-text="item.desc"></p>
+            </div>
+            <a :href="item.link" class="p-2 rounded-lg bg-slate-800 hover:bg-emerald-500 hover:text-black text-white text-xs font-bold transition flex-shrink-0">
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </template>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= PERSISTENT BOOKMARK DRAWER ================= -->
+  <div x-show="openBookmarkDrawer" x-cloak class="fixed inset-0 z-50 overflow-hidden">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" @click="openBookmarkDrawer = false"></div>
+    <div class="absolute inset-y-0 right-0 max-w-md w-full glass bg-slate-950/95 p-6 shadow-2xl flex flex-col justify-between custom-scrollbar overflow-y-auto">
+      
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="bookmark" class="w-5 h-5 text-brand-400"></i>
+            <h3 class="text-lg font-bold text-white">Saved Jobs</h3>
+          </div>
+          <button @click="openBookmarkDrawer = false" class="p-1 rounded-lg text-slate-400 hover:text-white">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="py-4 space-y-3">
+          <template x-for="item in bookmarkedJobs" :key="item.id">
+            <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-brand-400 uppercase" x-text="item.org"></span>
+                <h4 class="text-xs font-bold text-white truncate max-w-[200px]" x-text="item.role"></h4>
+                <span class="text-[10px] font-mono text-amber-400" x-text="'Deadline: ' + item.lastDate"></span>
+              </div>
+              <div class="flex items-center space-x-1">
+                <button @click="openJobModal(item)" class="p-1.5 rounded-lg bg-slate-800 text-xs text-white hover:bg-brand-600">Info</button>
+                <button @click="toggleBookmark(item)" class="p-1.5 rounded-lg bg-slate-800 text-xs text-red-400 hover:bg-red-500 hover:text-white"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              </div>
+            </div>
+          </template>
+
+          <div x-show="bookmarkedJobs.length === 0" class="text-center py-12 text-slate-400 text-xs">
+            <i data-lucide="bookmark-minus" class="w-8 h-8 mx-auto text-slate-600 mb-2"></i>
+            You haven't bookmarked any jobs yet.
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800 text-center">
+        <p class="text-[11px] text-slate-400">Saved to your browser storage</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: JOB DETAIL POPUP ================= -->
+  <div x-show="activeModalJob" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="activeModalJob = null"></div>
+    <div class="relative glass bg-slate-900 border border-slate-700 max-w-lg w-full rounded-3xl p-6 shadow-2xl z-10">
+      
+      <div class="flex items-start justify-between pb-3 border-b border-slate-800">
+        <div>
+          <span class="text-xs font-black uppercase tracking-wider text-brand-400" x-text="activeModalJob?.org"></span>
+          <h3 class="text-lg font-bold text-white mt-0.5" x-text="activeModalJob?.role"></h3>
+        </div>
+        <button @click="activeModalJob = null" class="p-1 rounded-lg text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="py-4 space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <span class="text-slate-400 font-semibold block">Total Posts</span>
+            <span class="text-sm font-bold text-white font-mono" x-text="activeModalJob?.posts || 'Multiple'"></span>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+            <span class="text-slate-400 font-semibold block">Last Date</span>
+            <span class="text-sm font-bold text-amber-400 font-mono" x-text="activeModalJob?.lastDate"></span>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+          <span class="text-slate-400 font-semibold block mb-1">Required Qualifications</span>
+          <div class="flex flex-wrap gap-1.5">
+            <template x-for="q in activeModalJob?.qual" :key="q">
+              <span class="px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold text-[11px]" x-text="q"></span>
+            </template>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+          <span class="text-slate-400 font-semibold block">Application Mode</span>
+          <span class="text-slate-200 font-medium">Online Portal / Official Recruitment Notification</span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+        <button @click="shareJob(activeModalJob)" class="px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white font-bold text-xs flex items-center space-x-1.5">
+          <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+          <span>Share</span>
+        </button>
+        <a :href="activeModalJob?.applyLink || '#'" target="_blank" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs inline-flex items-center space-x-1.5 shadow-lg shadow-brand-600/30">
+          <span>Go to Official Portal</span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: WHATSAPP SUBSCRIBE ================= -->
+  <div x-show="openSubscribeModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" @click="openSubscribeModal = false"></div>
+    <div class="relative glass bg-slate-900 border border-slate-700 max-w-sm w-full rounded-3xl p-6 shadow-2xl z-10 text-center">
+      
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto mb-3">
+        <i data-lucide="bell" class="w-6 h-6"></i>
+      </div>
+
+      <h3 class="text-lg font-bold text-white">Never Miss a Govt Job Drop</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-4">Get direct alerts on WhatsApp & Telegram when new notifications release.</p>
+
+      <div class="space-y-2">
+        <a href="https://whatsapp.com" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs flex items-center justify-center space-x-2 transition">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Join WhatsApp Channel</span>
+        </a>
+        <a href="https://t.me" target="_blank" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs flex items-center justify-center space-x-2 transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Join Telegram Group</span>
+        </a>
+      </div>
+
+      <button @click="openSubscribeModal = false" class="mt-4 text-xs text-slate-500 hover:underline">Close</button>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-800 bg-slate-950 pt-12 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-xs">
+        <div>
+          <div class="flex items-center space-x-2 mb-3">
+            <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+            </div>
+            <span class="text-base font-black text-white">GovtDrop</span>
+          </div>
+          <p class="text-slate-400 leading-relaxed">
+            Instant, verified Sarkari alerts for Tamil Nadu and Central Govt aspirants. Free forever.
+          </p>
+          <p class="text-slate-500 mt-3">Salem, Tamil Nadu, India • drop@govtdrop.in</p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-3">Tamil Nadu Portals</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="#" class="hover:text-white transition">TNPSC Group 1, 2, 4 & CTSE</a></li>
+            <li><a href="#" class="hover:text-white transition">TNEA 2026 Engineering Counseling</a></li>
+            <li><a href="#" class="hover:text-white transition">TANCET (MBA/MCA Admissions)</a></li>
+            <li><a href="#" class="hover:text-white transition">District Health Societies (DHS)</a></li>
+            <li><a href="#" class="hover:text-white transition">DCPU Child Protection Openings</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-3">Central & All-India</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="#" class="hover:text-white transition">Railway RRB JE, NTPC, Group D</a></li>
+            <li><a href="#" class="hover:text-white transition">SSC Steno, CHSL, Phase-XIV</a></li>
+            <li><a href="#" class="hover:text-white transition">Banking: SBI, Bank of Baroda, IOB</a></li>
+            <li><a href="#" class="hover:text-white transition">ISRO, DRDO, BEML, BHEL, NFC</a></li>
+            <li><a href="#" class="hover:text-white transition">UPSC EPFO Enforcement Officers</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider mb-3">Follow Us</h4>
+          <div class="flex items-center space-x-2 mb-4">
+            <a href="#" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            <a href="#" class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"><i data-lucide="youtube" class="w-4 h-4"></i></a>
+          </div>
+          <p class="text-[11px] text-slate-500">
+            Disclaimer: GovtDrop is an informational portal and is not affiliated with any official government authority. All trademarks belong to their respective owners.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500">
+        <p>© 2026 GovtDrop. Built for the next generation.</p>
+        <div class="flex space-x-4 mt-2 sm:mt-0">
+          <a href="#" class="hover:underline">Privacy Policy</a>
+          <a href="#" class="hover:underline">Terms & Conditions</a>
+          <a href="#" class="hover:underline">Contact us</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= JAVASCRIPT APP STATE & ALL EXTRACTED DATA ================= -->
+  <script>
+    function govtDropApp() {
+      return {
+        searchQuery: '',
+        selectedQualification: '',
+        selectedCategory: 'ALL',
+        visibleJobCount: 12,
+        openBookmarkDrawer: false,
+        openSubscribeModal: false,
+        activeModalJob: null,
+        bookmarkedJobs: [],
+
+        qualificationList: [
+          '10th Pass',
+          '12th Pass',
+          'ITI',
+          'Diploma',
+          'Any Degree',
+          'B.E/B.Tech',
+          'B.Sc / Medical',
+          'MBA / Commerce',
+          'Post Graduate'
+        ],
+
+        // 1. Admit Cards from Page 2
+        admitCards: [
+          { org: 'HAL', post: 'DT / MT 2026 Admit Card', status: 'Live', link: '#' },
+          { org: 'ONGC', post: 'Geologists and Engineers 2026', status: 'Download Out', link: '#' },
+          { org: 'CCI', post: 'Junior Assistant / MT 2026', status: 'Live', link: '#' },
+          { org: 'IBPS', post: 'SO Specialist Officer Prelims Admit Card', status: 'Live', link: '#' },
+          { org: 'NIC', post: 'Assistant 2026 Phase-I Call Letter', status: 'Active', link: '#' },
+          { org: 'NBEMS', post: 'Group A, B & C 2026 Exam City Slip', status: 'City Out', link: '#' },
+          { org: 'BSNL', post: 'Junior Telecom Officer (JTO)', status: 'Live', link: '#' },
+          { org: 'TNPSC', post: 'CTSE (Non-Interview Posts) Hall Ticket', status: 'Active', link: '#' },
+          { org: 'Air Force', post: 'AFCAT 02/2026 Entry Admit Card', status: 'Active', link: '#' },
+          { org: 'RRB', post: 'Railway Group D 2026 Phase-1 Admit Card', status: 'Live', link: '#' }
+        ],
+
+        // 2. Results & Marks from Page 3
+        resultsList: [
+          { org: 'RRB', post: 'NTPC (12th Level) 2025 CBT 1 Result & Score', type: 'Result Out', link: '#' },
+          { org: 'SBI', post: 'Apprentice Final Selection Result 2026', type: 'Final List', link: '#' },
+          { org: 'TNPSC', post: 'CTSE (ITI Level) Physical Test List', type: 'Selection List', link: '#' },
+          { org: 'IIFCL', post: 'Grade A & B Direct Score Card', type: 'Score Card', link: '#' },
+          { org: 'KVS / NVS', post: 'TGT, PGT Tier-II Examination Result', type: 'Merit List', link: '#' },
+          { org: 'SSC', post: 'CHSL 2025 Tier-II Final Merit (FRTA)', type: 'Result Out', link: '#' },
+          { org: 'TNPSC', post: 'Motor Vehicle Inspector CV List', type: 'CV List', link: '#' },
+          { org: 'TNPSC', post: 'Group I-B & I-C 2024 Oral Interview Notice', type: 'Interview Notice', link: '#' }
+        ],
+
+        // 3. Exam Dates from Page 2
+        examDates: [
+          { org: 'SSC', post: 'Phase-XIV/2026 Selection Posts Exam', status: 'Date Out' },
+          { org: 'SSC', post: 'Steno Grade C & D 2026 Schedule', status: 'Date Out' },
+          { org: 'SSC', post: 'Hindi Translators Combined Exam', status: 'Date Out' },
+          { org: 'TNPSC', post: 'Group 1 Combined Prelims Exam 2026', status: 'Date Out' },
+          { org: 'TNPSC', post: 'CTSE (Non-Interview) Exam Dates', status: 'Date Out' }
+        ],
+
+        // 4. Urgent / Ending This Week (Pages 3 & 4)
+        urgentJobs: [
+          { id: 'u1', org: 'SBI', role: 'Junior Associates (Clerk)', posts: '9124', qual: ['Any Degree'], lastDate: '31.08.2026', applyLink: '#' },
+          { id: 'u2', org: 'Coimbatore DHS', role: 'Medical & Support Staff', posts: '87', qual: ['8th Pass', 'ANM', 'DMLT', 'Any Degree'], lastDate: '31.08.2026', applyLink: '#' },
+          { id: 'u3', org: 'Chengalpattu DCPU', role: 'Child Protection Officer & Staff', posts: '34', qual: ['10th Pass', '12th Pass', 'B.Com', 'LLB'], lastDate: '31.08.2026', applyLink: '#' },
+          { id: 'u4', org: 'Namakkal DHS', role: 'Health Inspectors & Staff', posts: '33', qual: ['12th Pass', 'MPHW', 'SI Course'], lastDate: '31.08.2026', applyLink: '#' }
+        ],
+
+        // 5. Full Master Database (Extracted from Pages 3, 4, 5, 6, 7)
+        masterJobs: [
+          { id: 'j1', org: 'Southern Railway', role: 'Trade Apprentice Drive', posts: '4308', qual: ['10th Pass', '12th Pass', 'ITI'], category: 'RAILWAYS', lastDate: '16.09.2026', applyLink: '#' },
+          { id: 'j2', org: 'RRB', role: 'Junior Engineer (JE) Technical Posts', posts: '3993', qual: ['Diploma', 'B.Sc / Medical'], category: 'RAILWAYS', lastDate: '13.09.2026', applyLink: '#' },
+          { id: 'j3', org: 'Bank of Baroda', role: 'Officers, Managers & Specialists', posts: '2482', qual: ['Any Degree'], category: 'BANKING', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j4', org: 'TN Post Office', role: 'Gramin Dak Sevak (GDS Direct)', posts: '2095', qual: ['10th Pass'], category: 'TN_GOVT', lastDate: '21.09.2026', applyLink: '#' },
+          { id: 'j5', org: 'East Coast Railway', role: 'Apprenticeship Scheme', posts: '1599', qual: ['10th Pass', 'ITI'], category: 'RAILWAYS', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j6', org: 'BEML Limited', role: 'Engineers, Trainees & Staff', posts: '1346', qual: ['ITI', 'Diploma', 'B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '08.09.2026', applyLink: '#' },
+          { id: 'j7', org: 'ICF Chennai', role: 'Integral Coach Factory Apprentices', posts: '1010', qual: ['10th Pass', '12th Pass', 'ITI'], category: 'RAILWAYS', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j8', org: 'TNPSC', role: 'Combined Group 2 & 2A Services', posts: '821', qual: ['Any Degree'], category: 'TN_GOVT', lastDate: '09.09.2026', applyLink: '#' },
+          { id: 'j9', org: 'NFC', role: 'Technical Officers & Trainees', posts: '538', qual: ['ITI', 'Diploma', 'B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '16.09.2026', applyLink: '#' },
+          { id: 'j10', org: 'BHEL Trichy', role: 'Trade Apprentices & Non-Executive', posts: '530', qual: ['ITI', 'Diploma', 'B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '12.09.2026', applyLink: '#' },
+          { id: 'j11', org: 'IOCL', role: 'Engineers, Law Officers & Staff', posts: '470', qual: ['Diploma', 'B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '03.09.2026', applyLink: '#' },
+          { id: 'j12', org: 'AAI', role: 'Junior Executive (Air Traffic Control)', posts: '389', qual: ['B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j13', org: 'IOB', role: 'Specialist Officers & Managers', posts: '291', qual: ['B.E/B.Tech', 'Post Graduate', 'MBA / Commerce'], category: 'BANKING', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j14', org: 'ISRO LPSC', role: 'Technical Assistant & Scientists', posts: '175', qual: ['B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '16.09.2026', applyLink: '#' },
+          { id: 'j15', org: 'NGEL', role: 'Executive & Engineers Cadre', posts: '147', qual: ['B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j16', org: 'ADA', role: 'Aeronautical Project Assistants', posts: '111', qual: ['B.E/B.Tech', 'Post Graduate'], category: 'CENTRAL_PSU', lastDate: '02.09.2026', applyLink: '#' },
+          { id: 'j17', org: 'Income Tax', role: 'Inspectors, Tax Assistants & MTS', posts: '85', qual: ['10th Pass', '12th Pass', 'Any Degree'], category: 'CENTRAL_PSU', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j18', org: 'UPSC EPFO', role: 'Enforcement & Accounts Officers', posts: '80', qual: ['Any Degree'], category: 'CENTRAL_PSU', lastDate: '11.09.2026', applyLink: '#' },
+          { id: 'j19', org: 'SINP', role: 'Scientific & Technical Cadres', posts: '62', qual: ['10th Pass', 'ITI', 'Diploma', 'Post Graduate'], category: 'CENTRAL_PSU', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j20', org: 'Army ASC Centre', role: 'Civilian Motor Driver & MTS', posts: '62', qual: ['10th Pass'], category: 'RAILWAYS', lastDate: '04.09.2026', applyLink: '#' },
+          { id: 'j21', org: 'CPCL', role: 'Diploma Apprentice Cadres', posts: '60', qual: ['Diploma'], category: 'CENTRAL_PSU', lastDate: '11.09.2026', applyLink: '#' },
+          { id: 'j22', org: 'Cochin Shipyard', role: 'Workmen & Technicians', posts: '60', qual: ['Diploma'], category: 'CENTRAL_PSU', lastDate: '04.09.2026', applyLink: '#' },
+          { id: 'j23', org: 'Cuddalore DHS', role: 'Dental & Paramedical Staff', posts: '54', qual: ['12th Pass', 'B.Sc / Medical'], category: 'TN_GOVT', lastDate: '09.09.2026', applyLink: '#' },
+          { id: 'j24', org: 'CPCB', role: 'Scientist B, LDC & Assistants', posts: '51', qual: ['12th Pass', 'B.E/B.Tech', 'B.Sc / Medical', 'Any Degree'], category: 'CENTRAL_PSU', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j25', org: 'Naval Ship Repair Yard', role: 'Apprenticeship Trainees', posts: '50', qual: ['ITI'], category: 'RAILWAYS', lastDate: '10.10.2026', applyLink: '#' },
+          { id: 'j26', org: 'AVNL MTPF', role: 'Trade Cadre & Junior Managers', posts: '48', qual: ['Diploma', 'Any Degree'], category: 'CENTRAL_PSU', lastDate: '04.09.2026', applyLink: '#' },
+          { id: 'j27', org: 'CSIR', role: 'Technicians & Assistants', posts: '43', qual: ['10th Pass', 'ITI'], category: 'CENTRAL_PSU', lastDate: '17.09.2026', applyLink: '#' },
+          { id: 'j28', org: 'RFCL', role: 'Engineers, Medical Officers, Accounts', posts: '40', qual: ['B.E/B.Tech', 'B.Sc / Medical', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '24.09.2026', applyLink: '#' },
+          { id: 'j29', org: 'TNUAVC', role: 'Drone & Aerospace Technicians', posts: '36', qual: ['10th Pass', 'Diploma', 'B.E/B.Tech', 'Any Degree'], category: 'TN_GOVT', lastDate: '18.09.2026', applyLink: '#' },
+          { id: 'j30', org: 'SBI Specialist', role: 'IT Specialist Officers & Developers', posts: '34', qual: ['B.E/B.Tech', 'Post Graduate'], category: 'BANKING', lastDate: '27.08.2026', applyLink: '#' },
+          { id: 'j31', org: 'POWERGRID TN', role: 'Diploma & Graduate Trainees', posts: '32', qual: ['ITI', 'Diploma', 'B.E/B.Tech', 'B.Sc / Medical'], category: 'CENTRAL_PSU', lastDate: '10.09.2026', applyLink: '#' },
+          { id: 'j32', org: 'ASC Centre (South)', role: 'Group C Civilian Employees', posts: '31', qual: ['10th Pass'], category: 'RAILWAYS', lastDate: '18.09.2026', applyLink: '#' },
+          { id: 'j33', org: 'Sahitya Akademi', role: 'Office Assistants & Translators', posts: '30', qual: ['12th Pass', 'ITI', 'Any Degree', 'Post Graduate'], category: 'CENTRAL_PSU', lastDate: '21.09.2026', applyLink: '#' },
+          { id: 'j34', org: 'NCRA', role: 'Technical Assistant / Trainee', posts: '30', qual: ['10th Pass', 'ITI', 'Diploma', 'B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '31.08.2026', applyLink: '#' },
+          { id: 'j35', org: 'SECI', role: 'Solar Energy Engineers & Legal', posts: '28', qual: ['B.E/B.Tech', 'MBA / Commerce', 'Post Graduate'], category: 'CENTRAL_PSU', lastDate: '23.09.2026', applyLink: '#' },
+          { id: 'j36', org: 'MRPL', role: 'Engineers through GATE Score', posts: '26', qual: ['B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '19.09.2026', applyLink: '#' },
+          { id: 'j37', org: 'NIT Trichy', role: 'Non-Teaching Support Staff', posts: '24', qual: ['12th Pass', 'Diploma', 'Any Degree'], category: 'CENTRAL_PSU', lastDate: '02.09.2026', applyLink: '#' },
+          { id: 'j38', org: 'NPCC', role: 'Site Engineers (Civil/Arch)', posts: '22', qual: ['Diploma', 'B.E/B.Tech', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '29.08.2026', applyLink: '#' },
+          { id: 'j39', org: 'UCO Bank', role: 'Specialist Officers (IT/Security)', posts: '20', qual: ['B.E/B.Tech', 'Post Graduate'], category: 'BANKING', lastDate: '18.09.2026', applyLink: '#' },
+          { id: 'j40', org: 'ISRO LPSC', role: 'Apprenticeship Drive', posts: '19', qual: ['10th Pass', 'ITI', 'Diploma'], category: 'CENTRAL_PSU', lastDate: '04.09.2026', applyLink: '#' },
+          { id: 'j41', org: 'UCSL', role: 'Junior Supervisors & Commercial', posts: '13', qual: ['ITI', 'Diploma', 'MBA / Commerce'], category: 'CENTRAL_PSU', lastDate: '01.09.2026', applyLink: '#' },
+          { id: 'j42', org: 'Sivaganga GSMCH', role: 'Audiologists & Speech Therapists', posts: '11', qual: ['8th Pass', 'B.Sc / Medical', 'Post Graduate'], category: 'TN_GOVT', lastDate: '11.09.2026', applyLink: '#' },
+          { id: 'j43', org: 'STPI', role: 'Office Attendants & Assistants', posts: '10', qual: ['10th Pass', 'Diploma', 'B.E/B.Tech', 'Any Degree'], category: 'CENTRAL_PSU', lastDate: '12.10.2026', applyLink: '#' },
+          { id: 'j44', org: 'BHEL', role: 'Diploma Apprentice Engineers', posts: '10', qual: ['Diploma'], category: 'CENTRAL_PSU', lastDate: '07.09.2026', applyLink: '#' },
+          { id: 'j45', org: 'Ship Building Centre', role: 'Technicians', posts: '9', qual: ['10th Pass', 'ITI'], category: 'CENTRAL_PSU', lastDate: '14.09.2026', applyLink: '#' },
+          { id: 'j46', org: 'DRDO DIBT', role: 'Junior Research Fellow (JRF)', posts: '6', qual: ['B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j47', org: 'CCRS Chennai', role: 'Siddha Research Assistants', posts: '6', qual: ['12th Pass', 'Any Degree'], category: 'TN_GOVT', lastDate: '09.09.2026', applyLink: '#' },
+          { id: 'j48', org: 'TIFR', role: 'Scientific Assistants & Clerks', posts: '5', qual: ['10th Pass', 'ITI', 'Any Degree', 'B.E/B.Tech'], category: 'CENTRAL_PSU', lastDate: '15.09.2026', applyLink: '#' },
+          { id: 'j49', org: 'JIPMER Puducherry', role: 'Research Nurse & Lab Staff', posts: '4', qual: ['B.Sc / Medical'], category: 'CENTRAL_PSU', lastDate: '06.09.2026', applyLink: '#' },
+          { id: 'j50', org: 'TMB Bank', role: 'Agricultural Officers & Managers', posts: 'Multiple', qual: ['Any Degree', 'B.E/B.Tech', 'B.Sc / Medical'], category: 'BANKING', lastDate: '06.09.2026', applyLink: '#' }
+        ],
+
+        // 6. Admissions List from Page 1
+        admissionsList: [
+          { category: 'Engineering', categoryColor: 'text-indigo-400', title: 'TNEA 2026 Online Engineering Counseling', desc: 'Anna University & Affiliated Govt / Self-financing colleges choice filling', link: '#' },
+          { category: 'Medical', categoryColor: 'text-emerald-400', title: 'TN B.Pharm & D.Pharm Admissions 2026', desc: 'Direct online applications for Pharmacy colleges in Tamil Nadu', link: '#' },
+          { category: 'Nursing', categoryColor: 'text-pink-400', title: 'TN B.Sc Nursing & DGNM Counseling', desc: 'Directorate of Medical Education paramedical counseling', link: '#' },
+          { category: 'Central Univ', categoryColor: 'text-sky-400', title: 'CUET (UG & PG) Common University Entrance', desc: 'Admissions into Central Universities, CUTN, JNU, DU and BHU', link: '#' },
+          { category: 'Management', categoryColor: 'text-amber-400', title: 'TANCET (MBA & MCA) State Admissions', desc: 'Direct single-window admission counseling for MBA & MCA courses', link: '#' },
+          { category: 'Architecture', categoryColor: 'text-purple-400', title: 'Mamallapuram Govt Architecture College', desc: 'Online application for traditional architecture & sculpture courses', link: '#' }
+        ],
+
+        // Computed filtered list
+        get filteredMasterJobs() {
+          return this.masterJobs.filter(job => {
+            // Category check
+            const matchesCategory = (this.selectedCategory === 'ALL') || (job.category === this.selectedCategory);
+
+            // Search query check
+            const query = this.searchQuery.toLowerCase().trim();
+            const matchesSearch = !query || 
+              job.org.toLowerCase().includes(query) ||
+              job.role.toLowerCase().includes(query) ||
+              job.qual.some(q => q.toLowerCase().includes(query));
+
+            // Qualification pill check
+            const matchesQual = !this.selectedQualification || 
+              job.qual.some(q => q.toLowerCase().includes(this.selectedQualification.toLowerCase()));
+
+            return matchesCategory && matchesSearch && matchesQual;
+          });
+        },
+
+        get paginatedJobs() {
+          return this.filteredMasterJobs.slice(0, this.visibleJobCount);
+        },
+
+        // Helper Actions
+        resetFilters() {
+          this.searchQuery = '';
+          this.selectedQualification = '';
+          this.selectedCategory = 'ALL';
+          this.visibleJobCount = 12;
+        },
+
+        openJobModal(job) {
+          this.activeModalJob = job;
+          this.$nextTick(() => lucide.createIcons());
+        },
+
+        shareJob(job) {
+          const text = `⚡ Sarkari Alert: ${job.org} is hiring for ${job.role} (${job.posts} Posts). Last date: ${job.lastDate}. Check details: ${window.location.href}`;
+          if (navigator.share) {
+            navigator.share({ title: job.role, text: text, url: window.location.href });
+          } else {
+            navigator.clipboard.writeText(text);
+            alert('Job alert copied to clipboard!');
+          }
+        },
+
+        isBookmarked(job) {
+          return this.bookmarkedJobs.some(item => item.id === job.id);
+        },
+
+        toggleBookmark(job) {
+          if (this.isBookmarked(job)) {
+            this.bookmarkedJobs = this.bookmarkedJobs.filter(item => item.id !== job.id);
+          } else {
+            this.bookmarkedJobs.push(job);
+          }
+          localStorage.setItem('govtdrop_bookmarks', JSON.stringify(this.bookmarkedJobs));
+          this.$nextTick(() => lucide.createIcons());
+        },
+
+        initApp() {
+          // Load bookmarks from local storage
+          const saved = localStorage.getItem('govtdrop_bookmarks');
+          if (saved) {
+            try { this.bookmarkedJobs = JSON.parse(saved); } catch (e) {}
+          }
+          this.$nextTick(() => {
+            lucide.createIcons();
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>
